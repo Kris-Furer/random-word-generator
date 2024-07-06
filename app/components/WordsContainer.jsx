@@ -1,13 +1,15 @@
 'use client';
 import React, { useState } from 'react';
-import GenerateButton from "./GenerateButton";
+import Button from "./Button";
 
 
 const WordsContainer = () => {
 
   const [words, setWords] = useState([])
   const [savedWords, setSavedWords] = useState([])
-  const [useError, setUserError] = useState([])
+  const [userError, setUserError] = useState([])
+  const [inputValue, setInputValue] = useState([])
+
 
   const fakeData = ["cow", "pig"]
 
@@ -25,18 +27,34 @@ const WordsContainer = () => {
   };
 
   // Add the new saved word to the previous
-  const saveWord = (word) => {
-    setSavedWords([...savedWords, word]);
+  const saveWord = (word, clearInput = true) => {
+    if (savedWords.includes(word)) {
+      setUserError("Word already saved");
+    } else {
+      setSavedWords([...savedWords, word]);
+      setUserError('');
+    }
+    if (clearInput) {
+      setInputValue('');
+    }
   }
   const removeWord = (wordToRemove) => {
     // Use filter to keep all saved words except the one clcicked 
     setSavedWords(savedWords.filter((w) => w !== wordToRemove));
   }
-  
+  const handleOnChange = (event) => {
+    setInputValue(event.target.value);
+  }
 
   return (
     <div>
-      <GenerateButton onClick={fetchWords}>Generate Word</GenerateButton>
+      <Button onClick={fetchWords}>Generate Word</Button>
+      <input value={inputValue}  onChange={() => handleOnChange(event)} className='text-black p-4 m-4 ' type="text" />
+      <Button onClick={() => saveWord(inputValue, true)}>Add</Button>
+
+      <p>
+        {userError}
+      </p>
 
       <ul className='m-6'>
         {words.map((word) => (
@@ -51,10 +69,10 @@ const WordsContainer = () => {
       <p>Saved Words</p>
       <ul className='m-6'>
         {savedWords.map((savedWord) => (
-          <li 
-          key={savedWord}
-          onClick={() => removeWord(savedWord)}
-          className='p-6 border border-white inline-block cursor-pointer m-3'>{savedWord}</li>
+          <li
+            key={savedWord}
+            onClick={() => removeWord(savedWord)}
+            className='p-6 border border-white inline-block cursor-pointer m-3'>{savedWord}</li>
         ))}
       </ul>
     </div>

@@ -1,6 +1,5 @@
 
 
-import Image from "next/image";
 import WordsContainer from "./components/WordsContainer";
 
 export default async function Home() {
